@@ -2,7 +2,7 @@ from torch.utils.data import Dataset
 import pickle
 
 class DataGenerator(Dataset):
-    def __init__(self, mode='train', dir='/content/sentence-simplification/dataset'):
+    def __init__(self, mode='train', dir='/kaggle/working/sentence-simplification/dataset'):
         self.dir = dir
         self.mode = mode
         self.src = self.read_data(f'src_{mode}.txt')
