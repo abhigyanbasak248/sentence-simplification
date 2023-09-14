@@ -70,7 +70,14 @@ def train(model, optimizer, args):
                     metric['fkgl'] += fkgl
             except StopIteration:
                 pass
-
+                
+        torch.save({'epoch': epoch,
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'loss': loss,
+                    }, args.save_path)
+        print('checkpoint saved.')
+        
         log = []
         for key in metric.keys():
             log.append(f'{key}: {np.mean(metric[key]):.4f}')
@@ -78,17 +85,12 @@ def train(model, optimizer, args):
 
         scores.append(np.mean(metric['sari']))
         # save checkpoint for only the best model 
-        if epoch >= WARMUP_EPOCHS and scores[-1] == np.max(scores):
-            torch.save({'epoch': epoch+1,
-                        'model_state_dict': model.state_dict(),
-                        'optimizer_state_dict': optimizer.state_dict(),
-                        'loss': loss,
-                        }, args.save_path)
-            print('checkpoint saved.')
+        # if epoch >= WARMUP_EPOCHS and scores[-1] == np.max(scores):
+            
         # early stopping
-        elif len(scores) - np.argmax(scores) > PATIENCE:
-            print('stopping training.')
-            break
+        # elif len(scores) - np.argmax(scores) > PATIENCE:
+        #     print('stopping training.')
+        #     break
 
 def main(args):
     global encoderTokenizer, decoderTokenizer, DEVICE
